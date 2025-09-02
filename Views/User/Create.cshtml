@@ -1,0 +1,24 @@
+﻿@model Station.Models.User
+
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<h2>Create User</h2>
+
+<form asp-controller="User" asp-action="Create" method="post">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" autocomplete="name" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Role"></label>
+        <input asp-for="Role" class="form-control" autocomplete="off" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+

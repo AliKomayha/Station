@@ -1,0 +1,18 @@
+﻿@model Station.Models.User
+
+@{
+    ViewData["Title"] = "User Details";
+}
+
+<h2>User Details</h2>
+
+<div>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Role:</strong> @Model.Role</p>
+</div>
+
+<p>
+    <a href="/User/Edit/@Model.Id">Edit</a> |
+    <a href="/User/Index">Back to List</a>
+</p>

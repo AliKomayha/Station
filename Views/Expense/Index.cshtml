@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Station.Models.Expense>
+
+@{
+    ViewData["Title"] = "Expenses";
+}
+
+<h2>Expenses</h2>
+
+<p>
+    <a href="/Expense/Create" class="btn btn-success">Create New Expense</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var expense in Model)
+        {
+            <tr>
+                <td>@expense.Type</td>
+                <td>@expense.Price</td>
+                <td>@expense.Date.ToString("yyyy-MM-dd")</td>
+                <td>@expense.User?.Name</td>
+                <td>
+                    <a href="/Expense/Details/@expense.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/Expense/Edit/@expense.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/Expense/Delete/@expense.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
