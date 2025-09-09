@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Station.Models.LitersPlus>
+
+@{
+    ViewData["Title"] = "Liters Plus";
+}
+
+<h2>Liters Plus</h2>
+
+<p>
+    <a href="/LitersPlus/Create" class="btn btn-success">Create Liters Plus</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var litersplus in Model)
+        {
+            <tr>
+                <td>@litersplus.Type</td>
+                <td>@litersplus.Quantity</td>
+                <td>@litersplus.Price</td>
+                <td>@litersplus.Date.ToString("yyyy-MM-dd")</td>
+                <td>@litersplus.User?.Name</td>
+                <td>
+                    <a href="/LitersPlus/Details/@litersplus.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/LitersPlus/Edit/@litersplus.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/LitersPlus/Delete/@litersplus.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

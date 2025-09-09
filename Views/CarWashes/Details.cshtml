@@ -1,0 +1,16 @@
+﻿@model Station.Models.CarWash
+
+<h2>Car Wash Details</h2>
+
+<div>
+    <p><strong>Type:</strong> @Model.Type</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<p>
+    <a href="/CarWashes/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+    <a href="/CarWashes/Index" class="btn btn-secondary">Back to List</a>
+    <a href="/CarWashes/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+</p>

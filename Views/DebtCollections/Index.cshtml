@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Station.Models.DebtCollection>
+
+@{
+    ViewData["Title"] = "Debt Collections";
+}
+
+<h2>Debt Collections</h2>
+
+<p>
+    <a href="/DebtCollections/Create" class="btn btn-success">Create New Debt Collection</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var debtcollection in Model)
+        {
+            <tr>
+                <td>@debtcollection.Name</td>
+                <td>@debtcollection.Price</td>
+                <td>@debtcollection.Date.ToString("yyyy-MM-dd")</td>
+                <td>@debtcollection.User?.Name</td>
+                <td>
+                    <a href="/DebtCollections/Details/@debtcollection.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/DebtCollections/Edit/@debtcollection.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/DebtCollections/Delete/@debtcollection.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

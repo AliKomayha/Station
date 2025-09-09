@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Station.Models.CustomerVoucher>
+
+@{
+    ViewData["Title"] = "Customer Voucher";
+}
+
+<h2>Customer Vouchers</h2>
+
+<p>
+    <a href="/CustomerVouchers/Create" class="btn btn-success">Create Customer Voucher</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customervoucher in Model)
+        {
+            <tr>
+                <td>@customervoucher.Name</td>
+                <td>@customervoucher.Quantity</td>
+                <td>@customervoucher.Price</td>
+                <td>@customervoucher.Date.ToString("yyyy-MM-dd")</td>
+                <td>@customervoucher.User?.Name</td>
+                <td>
+                    <a href="/CustomerVouchers/Details/@customervoucher.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/CustomerVouchers/Edit/@customervoucher.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/CustomerVouchers/Delete/@customervoucher.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

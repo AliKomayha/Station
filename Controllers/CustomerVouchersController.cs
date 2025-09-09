@@ -2,57 +2,57 @@
 using Station.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Station.Controllers
 {
     [Authorize]
-    public class DebtsController : Controller
+    public class CustomerVouchersController : Controller
     {
         private readonly string _connectionString;
 
-        public DebtsController(IConfiguration config)
+        public CustomerVouchersController(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
 
-        // GET: /Debts
+
         public IActionResult Index()
         {
-            var debts = new List<Debt>();
+            var vouchers = new List<CustomerVoucher>();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts", connection);
+                    "SELECT Id, Name, Quantity, Price, Date, UsersId FROM Customer_Vouchers", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    debts.Add(new Debt
+                    vouchers.Add(new CustomerVoucher
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
-                        Price = reader.GetDecimal(2),
-                        Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        Quantity = reader.GetDecimal(2),
+                        Price = reader.GetDecimal(3),
+                        Date = reader.GetDateTime(4),
+                        UserId = reader.GetInt32(5)
                     });
                 }
             }
-            return View(debts);
+            return View(vouchers);
         }
 
-        // GET: /Debts/Create
+
         public IActionResult Create() => View();
 
-        // POST: /Debts/Create
+ 
         [HttpPost]
-        public IActionResult Create(Debt debt)
+        public IActionResult Create(CustomerVoucher voucher)
         {
             if (ModelState.IsValid)
             {
-
                 var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (UserId == null) return RedirectToAction("Login", "Auth");
 
@@ -60,38 +60,38 @@ namespace Station.Controllers
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "INSERT INTO Debts (Name, Price, Date, UsersID) VALUES (@Name, @Price, @Date, @UserId)",
+                        "INSERT INTO Customer_Vouchers (Name, Quantity, Price, Date, UsersId) VALUES (@Name, @Quantity, @Price, @Date, @UserId)",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
-                    command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
+                    command.Parameters.AddWithValue("@Name", voucher.Name);
+                    command.Parameters.AddWithValue("@Quantity", voucher.Quantity);
+                    command.Parameters.AddWithValue("@Price", voucher.Price);
+                    command.Parameters.AddWithValue("@Date", voucher.Date);
+                    command.Parameters.AddWithValue("@UserId",int.Parse(UserId));
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(voucher);
         }
 
-        // GET: /Debts/Details/5
         public IActionResult Details(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var voucher = GetVoucherById(id);
+            if (voucher == null) return NotFound();
+            return View(voucher);
         }
 
-        // GET: /Debts/Edit/5
+     
         public IActionResult Edit(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var voucher = GetVoucherById(id);
+            if (voucher == null) return NotFound();
+            return View(voucher);
         }
 
-        // POST: /Debts/Edit/5
+
         [HttpPost]
-        public IActionResult Edit(Debt debt)
+        public IActionResult Edit(CustomerVoucher voucher)
         {
             if (ModelState.IsValid)
             {
@@ -102,66 +102,68 @@ namespace Station.Controllers
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "UPDATE Debts SET Name=@Name, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
+                        "UPDATE Customer_Vouchers SET Name=@Name, Quantity=@Quantity, Price=@Price, Date=@Date, UsersId=@UserId WHERE Id=@Id",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
+                    command.Parameters.AddWithValue("@Name", voucher.Name);
+                    command.Parameters.AddWithValue("@Quantity", voucher.Quantity);
+                    command.Parameters.AddWithValue("@Price", voucher.Price);
+                    command.Parameters.AddWithValue("@Date", voucher.Date);
                     command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
-                    command.Parameters.AddWithValue("@Id", debt.Id);
+                    command.Parameters.AddWithValue("@Id", voucher.Id);
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(voucher);
         }
 
-        // GET: /Debts/Delete/5
         public IActionResult Delete(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var voucher = GetVoucherById(id);
+            if (voucher == null) return NotFound();
+            return View(voucher);
         }
 
-        // POST: /Debts/Delete/5
+     
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("DELETE FROM Debts WHERE Id=@Id", connection);
+                var command = new SqlCommand("DELETE FROM Customer_Vouchers WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }
             return RedirectToAction(nameof(Index));
         }
 
-        // Private helper: fetch debt by ID
-        private Debt? GetDebtById(int id)
+        // get by id
+        private CustomerVoucher? GetVoucherById(int id)
         {
-            Debt? debt = null;
+            CustomerVoucher? voucher = null;
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts WHERE Id=@Id", connection);
+                    "SELECT Id, Name, Quantity, Price, Date, UsersId FROM Customer_Vouchers WHERE Id=@Id",
+                    connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    debt = new Debt
+                    voucher = new CustomerVoucher
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
-                        Price = reader.GetDecimal(2),
-                        Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        Quantity = reader.GetDecimal(2),
+                        Price = reader.GetDecimal(3),
+                        Date = reader.GetDateTime(4),
+                        UserId = reader.GetInt32(5)
                     };
                 }
             }
-            return debt;
+            return voucher;
         }
     }
 }

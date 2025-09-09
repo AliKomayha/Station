@@ -1,0 +1,17 @@
+﻿@model Station.Models.GovernmentVoucher
+
+<h2>Government Voucher Details</h2>
+
+<div>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Quantity:</strong> @Model.Quantity</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<p>
+    <a href="/GovernmentVouchers/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+    <a href="/GovernmentVouchers/Index" class="btn btn-secondary">Back to List</a>
+    <a href="/GovernmentVouchers/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+</p>

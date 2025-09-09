@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Station.Models.GovernmentVoucher>
+
+@{
+    ViewData["Title"] = "Government Voucher";
+}
+
+<h2>GovernmentVouchers</h2>
+
+<p>
+    <a href="/GovernmentVouchers/Create" class="btn btn-success">Create Government Voucher</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var governmentvoucher in Model)
+        {
+            <tr>
+                <td>@governmentvoucher.Name</td>
+                <td>@governmentvoucher.Quantity</td>
+                <td>@governmentvoucher.Price</td>
+                <td>@governmentvoucher.Date.ToString("yyyy-MM-dd")</td>
+                <td>@governmentvoucher.User?.Name</td>
+                <td>
+                    <a href="/GovernmentVouchers/Details/@governmentvoucher.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/GovernmentVouchers/Edit/@governmentvoucher.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/GovernmentVouchers/Delete/@governmentvoucher.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

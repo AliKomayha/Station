@@ -1,4 +1,6 @@
-﻿namespace Station.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace Station.Models
 {
     public class CustomerVoucher
     {
@@ -11,6 +13,7 @@
 
         //foreign key
         public int UserId { get; set; }
+        [ValidateNever]
         public User User { get; set; }
     }
 }

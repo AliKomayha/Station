@@ -1,0 +1,16 @@
+﻿@model Station.Models.Debt
+
+<h2>Debt Details</h2>
+
+<div>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<p>
+    <a href="/Debts/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+    <a href="/Debts/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+    <a href="/Debts/Index" class="btn btn-secondary">Back to List</a>
+</p>

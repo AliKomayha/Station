@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Station.Models.GasOilFilter>
+
+@{
+    ViewData["Title"] = "Gas Oil Filters";
+}
+
+<h2>Gas Oil Filters</h2>
+
+<p>
+    <a href="/GasOilFilters/Create" class="btn btn-success">Create Gas Oil Filters</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var gasoilfilters in Model)
+        {
+            <tr>
+                <td>@gasoilfilters.Type</td>
+                <td>@gasoilfilters.Quantity</td>
+                <td>@gasoilfilters.Price</td>
+                <td>@gasoilfilters.Date.ToString("yyyy-MM-dd")</td>
+                <td>@gasoilfilters.User?.Name</td>
+                <td>
+                    <a href="/GasOilFilters/Details/@gasoilfilters.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/GasOilFilters/Edit/@gasoilfilters.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/GasOilFilters/Delete/@gasoilfilters.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

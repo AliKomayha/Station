@@ -8,29 +8,29 @@ using System.Security.Claims;
 namespace Station.Controllers
 {
     [Authorize]
-    public class DebtsController : Controller
+    public class DebtCollectionsController : Controller
     {
         private readonly string _connectionString;
 
-        public DebtsController(IConfiguration config)
+        public DebtCollectionsController(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
 
-        // GET: /Debts
+
         public IActionResult Index()
         {
-            var debts = new List<Debt>();
+            var collections = new List<DebtCollection>();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts", connection);
+                    "SELECT Id, Name, Price, Date, UsersID FROM Debt_Collection", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    debts.Add(new Debt
+                    collections.Add(new DebtCollection
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
@@ -40,19 +40,18 @@ namespace Station.Controllers
                     });
                 }
             }
-            return View(debts);
+            return View(collections);
         }
 
-        // GET: /Debts/Create
+       
         public IActionResult Create() => View();
 
-        // POST: /Debts/Create
+
         [HttpPost]
-        public IActionResult Create(Debt debt)
+        public IActionResult Create(DebtCollection collection)
         {
             if (ModelState.IsValid)
             {
-
                 var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (UserId == null) return RedirectToAction("Login", "Auth");
 
@@ -60,38 +59,38 @@ namespace Station.Controllers
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "INSERT INTO Debts (Name, Price, Date, UsersID) VALUES (@Name, @Price, @Date, @UserId)",
+                        "INSERT INTO Debt_Collection (Name, Price, Date, UsersID) VALUES (@Name, @Price, @Date, @UserId)",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
-                    command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
+                    command.Parameters.AddWithValue("@Name", collection.Name);
+                    command.Parameters.AddWithValue("@Price", collection.Price);
+                    command.Parameters.AddWithValue("@Date", collection.Date);
+                    command.Parameters.AddWithValue("@UserId",int.Parse(UserId));
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(collection);
         }
 
-        // GET: /Debts/Details/5
+        // GET: /DebtCollection/Details/5
         public IActionResult Details(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var collection = GetCollectionById(id);
+            if (collection == null) return NotFound();
+            return View(collection);
         }
 
-        // GET: /Debts/Edit/5
+
         public IActionResult Edit(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var collection = GetCollectionById(id);
+            if (collection == null) return NotFound();
+            return View(collection);
         }
 
-        // POST: /Debts/Edit/5
+     
         [HttpPost]
-        public IActionResult Edit(Debt debt)
+        public IActionResult Edit(DebtCollection collection)
         {
             if (ModelState.IsValid)
             {
@@ -102,56 +101,56 @@ namespace Station.Controllers
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "UPDATE Debts SET Name=@Name, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
+                        "UPDATE Debt_Collection SET Name=@Name, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
-                    command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
-                    command.Parameters.AddWithValue("@Id", debt.Id);
+                    command.Parameters.AddWithValue("@Name", collection.Name);
+                    command.Parameters.AddWithValue("@Price", collection.Price);
+                    command.Parameters.AddWithValue("@Date", collection.Date);
+                    command.Parameters.AddWithValue("@UserId",int.Parse(UserId));
+                    command.Parameters.AddWithValue("@Id", collection.Id);
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(collection);
         }
 
-        // GET: /Debts/Delete/5
+  
         public IActionResult Delete(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var collection = GetCollectionById(id);
+            if (collection == null) return NotFound();
+            return View(collection);
         }
 
-        // POST: /Debts/Delete/5
+
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("DELETE FROM Debts WHERE Id=@Id", connection);
+                var command = new SqlCommand("DELETE FROM Debt_Collection WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }
             return RedirectToAction(nameof(Index));
         }
 
-        // Private helper: fetch debt by ID
-        private Debt? GetDebtById(int id)
+    
+        private DebtCollection? GetCollectionById(int id)
         {
-            Debt? debt = null;
+            DebtCollection? collection = null;
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts WHERE Id=@Id", connection);
+                    "SELECT Id, Name, Price, Date, UsersID FROM Debt_Collection WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    debt = new Debt
+                    collection = new DebtCollection
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
@@ -161,7 +160,7 @@ namespace Station.Controllers
                     };
                 }
             }
-            return debt;
+            return collection;
         }
     }
 }

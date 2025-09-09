@@ -1,0 +1,17 @@
+﻿@model Station.Models.CustomerVoucher
+
+<h2>Customer Voucher Details</h2>
+
+<div>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Quantity:</strong> @Model.Quantity</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<p>
+    <a href="/CustomerVouchers/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+    <a href="/CustomerVouchers/Index" class="btn btn-secondary">Back to List</a>
+    <a href="/CustomerVouchers/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+</p>

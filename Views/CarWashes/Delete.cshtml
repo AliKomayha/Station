@@ -1,0 +1,17 @@
+﻿@model Station.Models.CarWash
+
+<h2>Delete Car Wash</h2>
+
+<div>
+    <p>Are you sure you want to delete this car wash?</p>
+    <p><strong>Type:</strong> @Model.Type</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="/CarWashes/Index" class="btn btn-secondary">Cancel</a>
+</form>

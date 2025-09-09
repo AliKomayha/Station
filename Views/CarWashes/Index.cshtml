@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Station.Models.CarWash>
+
+@{
+    ViewData["Title"] = "Car Washes";
+}
+
+<h2>Car Washes</h2>
+
+<p>
+    <a href="/CarWashes/Create" class="btn btn-success">Create New Car Wash</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Type</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>User</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var carwash in Model)
+        {
+            <tr>
+                <td>@carwash.Type</td>
+                <td>@carwash.Price</td>
+                <td>@carwash.Date.ToString("yyyy-MM-dd")</td>
+                <td>@carwash.User?.Name</td>
+                <td>
+                    <a href="/CarWashes/Details/@carwash.Id" class="btn btn-info btn-sm">Details</a>
+                    <a href="/CarWashes/Edit/@carwash.Id" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/CarWashes/Delete/@carwash.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

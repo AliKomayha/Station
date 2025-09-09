@@ -1,0 +1,17 @@
+﻿@model Station.Models.LitersPlus
+
+<h2>Government Liters Plus Details</h2>
+
+<div>
+    <p><strong>Type:</strong> @Model.Type</p>
+    <p><strong>Quantity:</strong> @Model.Quantity</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<p>
+    <a href="/LitersPlus/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+    <a href="/LitersPlus/Index" class="btn btn-secondary">Back to List</a>
+    <a href="/LitersPlus/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+</p>

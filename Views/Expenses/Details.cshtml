@@ -1,0 +1,16 @@
+﻿@model Station.Models.Expense
+
+<h2>Expense Details</h2>
+
+<div>
+    <p><strong>Type:</strong> @Model.Type</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<p>
+    <a href="/Expenses/Delete/@Model.Id" class="btn btn-danger">Delete</a>
+    <a href="/Expenses/Index" class="btn btn-secondary">Back to List</a>
+    <a href="/Expenses/Edit/@Model.Id" class="btn btn-primary">Edit</a>
+</p>

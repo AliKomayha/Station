@@ -1,0 +1,39 @@
+﻿@model IEnumerable<Station.Models.User>
+
+@{
+    ViewData["Title"] = "Users";
+}
+
+<h2>Users</h2>
+
+<p>
+    <a href="/Users/Create">Create New User</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Is Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.Name</td>
+                <td>@user.Role</td>
+                <td>@user.IsActive</td>
+                <td>
+                    <a href="/Users/Details/@user.Id" class="btn btn-info btn-sm">Details</a> |
+                    <a href="/Users/Edit/@user.Id" class="btn btn-primary btn-sm">Edit</a> |
+                    <a href="/Users/Delete/@user.Id" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

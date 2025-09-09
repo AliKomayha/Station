@@ -2,166 +2,159 @@
 using Station.Models;
 using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Station.Controllers
 {
     [Authorize]
-    public class DebtsController : Controller
+    public class CarWashesController : Controller
     {
         private readonly string _connectionString;
 
-        public DebtsController(IConfiguration config)
+        public CarWashesController(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
 
-        // GET: /Debts
         public IActionResult Index()
         {
-            var debts = new List<Debt>();
+            var washes = new List<CarWash>();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts", connection);
+                var command = new SqlCommand("SELECT Id, Type, Price, Date, UsersID FROM Car_Washes", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    debts.Add(new Debt
+                    washes.Add(new CarWash
                     {
                         Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),
+                        Type = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
                         UserId = reader.GetInt32(4)
                     });
                 }
             }
-            return View(debts);
+            return View(washes);
         }
 
-        // GET: /Debts/Create
+   
         public IActionResult Create() => View();
 
-        // POST: /Debts/Create
+     
         [HttpPost]
-        public IActionResult Create(Debt debt)
+        public IActionResult Create(CarWash carWash)
         {
             if (ModelState.IsValid)
             {
-
                 var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (UserId == null) return RedirectToAction("Login", "Auth");
 
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    var command = new SqlCommand(
-                        "INSERT INTO Debts (Name, Price, Date, UsersID) VALUES (@Name, @Price, @Date, @UserId)",
+                    var command = new SqlCommand("INSERT INTO Car_Washes (Type, Price, Date, UsersID) VALUES (@Type, @Price, @Date, @UserId)",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
+                    command.Parameters.AddWithValue("@Type", carWash.Type);
+                    command.Parameters.AddWithValue("@Price", carWash.Price);
+                    command.Parameters.AddWithValue("@Date", carWash.Date);
                     command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(carWash);
         }
 
-        // GET: /Debts/Details/5
         public IActionResult Details(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var carWash = GetCarWashById(id);
+            if (carWash == null) return NotFound();
+            return View(carWash);
         }
 
-        // GET: /Debts/Edit/5
         public IActionResult Edit(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var carWash = GetCarWashById(id);
+            if (carWash == null) return NotFound();
+            return View(carWash);
         }
 
-        // POST: /Debts/Edit/5
+        
         [HttpPost]
-        public IActionResult Edit(Debt debt)
+        public IActionResult Edit(CarWash carWash)
         {
+            var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (UserId == null) return RedirectToAction("Login", "Auth");
+
             if (ModelState.IsValid)
             {
-                var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (UserId == null) return RedirectToAction("Login", "Auth");
-
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "UPDATE Debts SET Name=@Name, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
+                        "UPDATE Car_Washes SET Type=@Type, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
+                    command.Parameters.AddWithValue("@Type", carWash.Type);
+                    command.Parameters.AddWithValue("@Price", carWash.Price);
+                    command.Parameters.AddWithValue("@Date", carWash.Date);
                     command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
-                    command.Parameters.AddWithValue("@Id", debt.Id);
+                    command.Parameters.AddWithValue("@Id", carWash.Id);
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(carWash);
         }
 
-        // GET: /Debts/Delete/5
+    
         public IActionResult Delete(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var carWash = GetCarWashById(id);
+            if (carWash == null) return NotFound();
+            return View(carWash);
         }
 
-        // POST: /Debts/Delete/5
+
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("DELETE FROM Debts WHERE Id=@Id", connection);
+                var command = new SqlCommand("DELETE FROM Car_Washes WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }
             return RedirectToAction(nameof(Index));
         }
 
-        // Private helper: fetch debt by ID
-        private Debt? GetDebtById(int id)
+        // helper method to fetch by ID
+        private CarWash? GetCarWashById(int id)
         {
-            Debt? debt = null;
+            CarWash? carWash = null;
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts WHERE Id=@Id", connection);
+                var command = new SqlCommand("SELECT Id, Type, Price, Date, UsersID FROM Car_Washes WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    debt = new Debt
+                    carWash = new CarWash
                     {
                         Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),
+                        Type = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
                         UserId = reader.GetInt32(4)
                     };
                 }
             }
-            return debt;
+            return carWash;
         }
     }
 }

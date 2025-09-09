@@ -1,0 +1,17 @@
+﻿@model Station.Models.Debt
+
+<h2>Delete Debt</h2>
+
+<div>
+    <p>Are you sure you want to delete this debt?</p>
+    <p><strong>Name:</strong> @Model.Name</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="/Debts/Index" class="btn btn-secondary">Cancel</a>
+</form>

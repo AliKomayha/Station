@@ -1,4 +1,6 @@
-﻿namespace Station.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace Station.Models
 {
     public class CarWash
     {
@@ -9,6 +11,7 @@
 
         //foreign key
         public int UserId { get; set; }
+        [ValidateNever]
         public User User { get; set; }
 
     }

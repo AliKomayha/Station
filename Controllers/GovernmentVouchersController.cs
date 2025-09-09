@@ -8,51 +8,50 @@ using System.Security.Claims;
 namespace Station.Controllers
 {
     [Authorize]
-    public class DebtsController : Controller
+    public class GovernmentVouchersController : Controller
     {
         private readonly string _connectionString;
 
-        public DebtsController(IConfiguration config)
+        public GovernmentVouchersController(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection");
         }
 
-
-        // GET: /Debts
+        // GET: /GovernmentVouchers
         public IActionResult Index()
         {
-            var debts = new List<Debt>();
+            var vouchers = new List<GovernmentVoucher>();
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts", connection);
+                    "SELECT Id, Name, Quantity, Price, Date, UsersID FROM Government_Vouchers", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
-                    debts.Add(new Debt
+                    vouchers.Add(new GovernmentVoucher
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
-                        Price = reader.GetDecimal(2),
-                        Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        Quantity = reader.GetDecimal(2),
+                        Price = reader.GetDecimal(3),
+                        Date = reader.GetDateTime(4),
+                        UserId = reader.GetInt32(5)
                     });
                 }
             }
-            return View(debts);
+            return View(vouchers);
         }
 
-        // GET: /Debts/Create
+        // GET: /GovernmentVouchers/Create
         public IActionResult Create() => View();
 
-        // POST: /Debts/Create
+        // POST: /GovernmentVouchers/Create
         [HttpPost]
-        public IActionResult Create(Debt debt)
+        public IActionResult Create(GovernmentVoucher voucher)
         {
             if (ModelState.IsValid)
             {
-
                 var UserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 if (UserId == null) return RedirectToAction("Login", "Auth");
 
@@ -60,38 +59,39 @@ namespace Station.Controllers
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "INSERT INTO Debts (Name, Price, Date, UsersID) VALUES (@Name, @Price, @Date, @UserId)",
+                        "INSERT INTO Government_Vouchers (Name, Quantity, Price, Date, UsersID) VALUES (@Type, @Quantity, @Price, @Date, @UserId)",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
+                    command.Parameters.AddWithValue("@Type", voucher.Name);
+                    command.Parameters.AddWithValue("@Quantity", voucher.Quantity);
+                    command.Parameters.AddWithValue("@Price", voucher.Price);
+                    command.Parameters.AddWithValue("@Date", voucher.Date);
                     command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(voucher);
         }
 
-        // GET: /Debts/Details/5
+        // GET: /GovernmentVouchers/Details/5
         public IActionResult Details(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var voucher = GetVoucherById(id);
+            if (voucher == null) return NotFound();
+            return View(voucher);
         }
 
-        // GET: /Debts/Edit/5
+        // GET: /GovernmentVouchers/Edit/5
         public IActionResult Edit(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var voucher = GetVoucherById(id);
+            if (voucher == null) return NotFound();
+            return View(voucher);
         }
 
-        // POST: /Debts/Edit/5
+        // POST: /GovernmentVouchers/Edit/5
         [HttpPost]
-        public IActionResult Edit(Debt debt)
+        public IActionResult Edit(GovernmentVoucher voucher)
         {
             if (ModelState.IsValid)
             {
@@ -102,66 +102,69 @@ namespace Station.Controllers
                 {
                     connection.Open();
                     var command = new SqlCommand(
-                        "UPDATE Debts SET Name=@Name, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
+                        "UPDATE Government_Vouchers SET Name=@Name, Quantity=@Quantity, Price=@Price, Date=@Date, UsersID=@UserId WHERE Id=@Id",
                         connection);
-                    command.Parameters.AddWithValue("@Name", debt.Name);
-                    command.Parameters.AddWithValue("@Price", debt.Price);
-                    command.Parameters.AddWithValue("@Date", debt.Date);
-                    command.Parameters.AddWithValue("@UserId", int.Parse(UserId));
-                    command.Parameters.AddWithValue("@Id", debt.Id);
+                    command.Parameters.AddWithValue("@Name", voucher.Name);
+                    command.Parameters.AddWithValue("@Quantity", voucher.Quantity);
+                    command.Parameters.AddWithValue("@Price", voucher.Price);
+                    command.Parameters.AddWithValue("@Date", voucher.Date);
+                    command.Parameters.AddWithValue("@UserId", voucher.UserId);
+                    command.Parameters.AddWithValue("@Id", int.Parse(UserId));
                     command.ExecuteNonQuery();
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(debt);
+            return View(voucher);
         }
 
-        // GET: /Debts/Delete/5
+        // GET: /GovernmentVouchers/Delete/5
         public IActionResult Delete(int id)
         {
-            var debt = GetDebtById(id);
-            if (debt == null) return NotFound();
-            return View(debt);
+            var voucher = GetVoucherById(id);
+            if (voucher == null) return NotFound();
+            return View(voucher);
         }
 
-        // POST: /Debts/Delete/5
+        // POST: /GovernmentVouchers/Delete/5
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("DELETE FROM Debts WHERE Id=@Id", connection);
+                var command = new SqlCommand("DELETE FROM Government_Vouchers WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 command.ExecuteNonQuery();
             }
             return RedirectToAction(nameof(Index));
         }
 
-        // Private helper: fetch debt by ID
-        private Debt? GetDebtById(int id)
+        // Private helper: fetch voucher by ID
+        private GovernmentVoucher? GetVoucherById(int id)
         {
-            Debt? debt = null;
+            GovernmentVoucher? voucher = null;
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts WHERE Id=@Id", connection);
+                    "SELECT Id, Name, Quantity, Price, Date, UsersID FROM Government_Vouchers WHERE Id=@Id",
+                    connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
                 {
-                    debt = new Debt
+                    voucher = new GovernmentVoucher
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
-                        Price = reader.GetDecimal(2),
-                        Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        Quantity = reader.GetDecimal(2),
+                        Price = reader.GetDecimal(3),
+                        Date = reader.GetDateTime(4),
+                        UserId = reader.GetInt32(5)
                     };
                 }
             }
-            return debt;
+            return voucher;
         }
     }
 }

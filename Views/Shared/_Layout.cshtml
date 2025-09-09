@@ -22,16 +22,42 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Users</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Expenses" asp-action="Index">Expenses</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expense" asp-action="Index">Expense</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Debts" asp-action="Index">Debts</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CarWashes" asp-action="Index">Car Washes</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="DebtCollections" asp-action="Index">Debt Collections</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerVouchers" asp-action="Index">Customer Vouchers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="GovernmentVouchers" asp-action="Index">Government Vouchers</a>
+                        </li>
+                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="GasOilFilters" asp-action="Index">Gas/Oil/Filters</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="LitersPlus" asp-action="Index">Liters Plus</a>
+                        </li>
+                        @* <button type="submit" asp-controller="Auth" asp-action="Logout" class="btn btn-primary">Logout</button> *@
                     </ul>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-link">Logout</button>
+                        </form>
+                    }
                 </div>
             </div>
         </nav>

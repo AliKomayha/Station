@@ -1,0 +1,18 @@
+﻿@model Station.Models.LitersPlus
+
+<h2>Delete Liters Plus</h2>
+
+<div>
+    <p>Are you sure you want to delete this GovernmentVoucher?</p>
+    <p><strong>Type:</strong> @Model.Type</p>
+    <p><strong>Quantity:</strong> @Model.Quantity</p>
+    <p><strong>Price:</strong> @Model.Price</p>
+    <p><strong>Date:</strong> @Model.Date.ToString("yyyy-MM-dd")</p>
+    <p><strong>User:</strong> @Model.User?.Name</p>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a href="/LitersPlus/Index" class="btn btn-secondary">Cancel</a>
+</form>
