@@ -3,6 +3,7 @@ using Station.Models;
 using Microsoft.Data.SqlClient; 
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Station.Controllers
 {
@@ -166,6 +167,37 @@ namespace Station.Controllers
                 command.ExecuteNonQuery();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+
+
+        [Authorize]
+        public IActionResult Profile()
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var user = GetUserById(userId); 
+            if (user == null) return NotFound();
+
+            return View("Profile", user);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult Profile(User model)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            if (userId != model.Id) return Unauthorized(); // extra safety
+
+            // Hash password if it changed
+            if (!string.IsNullOrEmpty(model.PasswordHash))
+            {
+                model.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.PasswordHash);
+            }
+
+            // Reuse your Edit logic to update name & password
+            Edit(model); // your existing DB update method
+            return RedirectToAction("Profile");
         }
 
 

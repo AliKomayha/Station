@@ -4,29 +4,51 @@
     ViewData["Title"] = "Create User";
 }
 
-<h2>Create User</h2>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Create New User
+                </h4>
+            </div>
+            <div class="card-body">
+                <form asp-controller="Users" asp-action="Create" method="post">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-<form asp-controller="Users" asp-action="Create" method="post">
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label fw-bold"></label>
+                        <input asp-for="Name" class="form-control" autocomplete="name" placeholder="Enter user name" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" autocomplete="name" />
+                    <div class="mb-3">
+                        <label asp-for="PasswordHash" class="form-label fw-bold"></label>
+                        <input asp-for="PasswordHash" class="form-control" type="password" autocomplete="new-password" placeholder="Enter password" />
+                        <span asp-validation-for="PasswordHash" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Role" class="form-label fw-bold"></label>
+                        <select asp-for="Role" class="form-select" autocomplete="off">
+                            <option value="">Select a role</option>
+                            <option value="User">User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/Users/Index" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Create User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="PasswordHash"></label>
-        <input asp-for="PasswordHash" class="form-control" type="password" autocomplete="new-password" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="Role"></label>
-        <select asp-for="Role" class="form-control" autocomplete="off" >
-		<option value="User">User</option>
-		<option value="Admin">Admin</option>
-		</select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
+</div>
 

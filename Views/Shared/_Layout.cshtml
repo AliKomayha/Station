@@ -5,72 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Station</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Station.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Station</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">Station</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Home
+                            </a>
                         </li>
-                        
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="managementDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-cogs me-1"></i>Management
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="managementDropdown">
+                                <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Users</a></li>
+                                <li><a class="dropdown-item" asp-controller="Expenses" asp-action="Index">Expenses</a></li>
+                                <li><a class="dropdown-item" asp-controller="Debts" asp-action="Index">Debts</a></li>
+                                <li><a class="dropdown-item" asp-controller="DebtCollections" asp-action="Index">Debt Collections</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Expenses" asp-action="Index">Expenses</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="servicesDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-concierge-bell me-1"></i>Services
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                                <li><a class="dropdown-item" asp-controller="CarWashes" asp-action="Index">Car Washes</a></li>
+                                <li><a class="dropdown-item" asp-controller="GasOilFilters" asp-action="Index">Gas/Oil/Filters</a></li>
+                                <li><a class="dropdown-item" asp-controller="LitersPlus" asp-action="Index">Liters Plus</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Debts" asp-action="Index">Debts</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="vouchersDropdown" role="button" 
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-ticket-alt me-1"></i>Vouchers
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="vouchersDropdown">
+                                <li><a class="dropdown-item" asp-controller="CustomerVouchers" asp-action="Index">Customer Vouchers</a></li>
+                                <li><a class="dropdown-item" asp-controller="GovernmentVouchers" asp-action="Index">Government Vouchers</a></li>
+                            </ul>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CarWashes" asp-action="Index">Car Washes</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="DebtCollections" asp-action="Index">Debt Collections</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="CustomerVouchers" asp-action="Index">Customer Vouchers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="GovernmentVouchers" asp-action="Index">Government Vouchers</a>
-                        </li>
-                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="GasOilFilters" asp-action="Index">Gas/Oil/Filters</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="LitersPlus" asp-action="Index">Liters Plus</a>
-                        </li>
-                        @* <button type="submit" asp-controller="Auth" asp-action="Logout" class="btn btn-primary">Logout</button> *@
                     </ul>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
-                            <button type="submit" class="btn btn-link">Logout</button>
-                        </form>
+                        <div class="d-flex">
+                            <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-sign-out-alt me-1"></i>Logout
+                                </button>
+                            </form>
+                        </div>
                     }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid px-3 px-md-4">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Station - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted mt-5">
+        <div class="container-fluid px-3 px-md-4">
+            <div class="row align-items-center">
+                <div class="col-12 col-md-6 text-center text-md-start">
+                    &copy; 2025 - Station
+                </div>
+                <div class="col-12 col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none">
+                        <i class="fas fa-shield-alt me-1"></i>Privacy Policy
+                    </a>
+                </div>
+            </div>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

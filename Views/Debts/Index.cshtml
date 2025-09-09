@@ -4,36 +4,51 @@
     ViewData["Title"] = "Debts";
 }
 
-<h2>Debts</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="fas fa-credit-card me-2"></i>Debts
+    </h2>
+    <a href="/Debts/Create" class="btn btn-success">
+        <i class="fas fa-plus me-1"></i>Create New Debt
+    </a>
+</div>
 
-<p>
-    <a href="/Debts/Create" class="btn btn-success">Create New Debt</a>
-</p>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Price</th>
-            <th>Date</th>
-            <th>User</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var debt in Model)
-        {
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
             <tr>
-                <td>@debt.Name</td>
-                <td>@debt.Price</td>
-                <td>@debt.Date.ToString("yyyy-MM-dd")</td>
-                <td>@debt.User?.Name</td>
-                <td>
-                    <a href="/Debts/Details/@debt.Id" class="btn btn-info btn-sm">Details</a>
-                    <a href="/Debts/Edit/@debt.Id" class="btn btn-primary btn-sm">Edit</a>
-                    <a href="/Debts/Delete/@debt.Id" class="btn btn-danger btn-sm">Delete</a>
-                </td>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Date</th>
+                <th>User</th>
+                <th class="text-center">Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var debt in Model)
+            {
+                <tr>
+                    <td>@debt.Name</td>
+                    <td>
+                        <strong class="text-danger">$@debt.Price.ToString("F2")</strong>
+                    </td>
+                    <td>@debt.Date.ToString("MMM dd, yyyy")</td>
+                    <td>@debt.User?.Name</td>
+                    <td class="text-center">
+                        <div class="btn-group" role="group">
+                            <a href="/Debts/Details/@debt.Id" class="btn btn-info btn-sm" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/Debts/Edit/@debt.Id" class="btn btn-primary btn-sm" title="Edit">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="/Debts/Delete/@debt.Id" class="btn btn-danger btn-sm" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
