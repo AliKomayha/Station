@@ -29,11 +29,10 @@
             {
                 <tr>
                     <td>@debt.Name</td>
-                    <td>
-                        <strong class="text-danger">$@debt.Price.ToString("F2")</strong>
-                    </td>
+                    <td><strong class="text-danger">$@debt.Price.ToString("F2")</strong></td>
                     <td>@debt.Date.ToString("MMM dd, yyyy")</td>
                     <td>@debt.User?.Name</td>
+
                     <td class="text-center">
                         <div class="btn-group" role="group">
                             <a href="/Debts/Details/@debt.Id" class="btn btn-info btn-sm" title="View Details">

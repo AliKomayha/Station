@@ -26,7 +26,7 @@ namespace Station.Controllers
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts", connection);
+                    "SELECT Debts.Id, Debts.Name, Price, Date, Users.Id, Users.Name FROM Debts JOIN Users ON Users.Id = Debts.UsersID", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -36,7 +36,11 @@ namespace Station.Controllers
                         Name = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User {
+                            Id = reader.GetInt32(4),
+                            Name = reader.GetString(5),
+                        }
                     });
                 }
             }
@@ -146,7 +150,7 @@ namespace Station.Controllers
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debts WHERE Id=@Id", connection);
+                    "SELECT Debts.Id, Debts.Name, Price, Date, Users.Id, Users.Name FROM Debts JOIN Users ON Users.Id = Debts.UsersID WHERE Debts.Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -157,7 +161,12 @@ namespace Station.Controllers
                         Name = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User
+                        {
+                            Id = reader.GetInt32(4),
+                            Name = reader.GetString(5)
+                        }
                     };
                 }
             }

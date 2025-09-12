@@ -16,8 +16,10 @@ namespace Station.Models
         public string Role { get; set; }
 
         [Required]
+        [ValidateNever]
         public string PasswordHash { get; set; }
 
+        [ValidateNever]
         public bool IsActive { get; set; } = true;
 
         [ValidateNever]

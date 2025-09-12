@@ -8,6 +8,7 @@ using System.Security.Claims;
 namespace Station.Controllers
 {
     [Authorize]
+    
     public class UsersController : Controller
     {
         private readonly string _connectionString;
@@ -19,6 +20,7 @@ namespace Station.Controllers
         }
 
         // GET
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
             var users = new List<User>();
@@ -46,6 +48,7 @@ namespace Station.Controllers
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create(User user)
         {
 
@@ -67,10 +70,10 @@ namespace Station.Controllers
                 
             }
             return View(user);
-            //return Content($"request {user.Name}, {user.Role}");
+           
         }
 
-        
+        [Authorize(Roles = "Admin")]
         public IActionResult Details(int id)
         {
             var user = GetUserById(id);
@@ -78,7 +81,7 @@ namespace Station.Controllers
             return View(user);
         }
 
-
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             var user = GetUserById(id);
@@ -88,7 +91,8 @@ namespace Station.Controllers
 
        
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(User user)
         {
             if (ModelState.IsValid)
@@ -107,7 +111,8 @@ namespace Station.Controllers
             return View(user);
         }
 
-   
+
+       
         public IActionResult Delete(int id)
         {
             var user = GetUserById(id);
@@ -118,6 +123,7 @@ namespace Station.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -157,6 +163,7 @@ namespace Station.Controllers
         // deactivate user instead of deleting 
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Deactivate(int id)
         {
             using (var connection = new SqlConnection(_connectionString))
@@ -199,6 +206,43 @@ namespace Station.Controllers
             Edit(model); // your existing DB update method
             return RedirectToAction("Profile");
         }
+
+
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult UpdateProfile(User model)
+        {
+            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            if (userId != model.Id) return Unauthorized();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                string sql = "UPDATE Users SET Name=@Name";
+                if (!string.IsNullOrEmpty(model.PasswordHash))
+                {
+                    sql += ", PasswordHash=@PasswordHash";
+                    model.PasswordHash = BCrypt.Net.BCrypt.HashPassword(model.PasswordHash);
+                }
+                sql += " WHERE Id=@Id";
+
+                var command = new SqlCommand(sql, connection);
+                command.Parameters.AddWithValue("@Name", model.Name);
+                command.Parameters.AddWithValue("@Id", model.Id);
+                if (!string.IsNullOrEmpty(model.PasswordHash))
+                {
+                    command.Parameters.AddWithValue("@PasswordHash", model.PasswordHash);
+                }
+
+                command.ExecuteNonQuery();
+            }
+
+            return RedirectToAction("Profile");
+        }
+
+
 
 
     }

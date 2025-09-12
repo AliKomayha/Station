@@ -1,26 +1,46 @@
 ﻿@model Station.Models.CustomerVoucher
 
-<h2>Create Customer Voucher</h2>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Quantity"></label>
-        <input asp-for="Quantity" class="form-control" type="number" step="0.01" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Price"></label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Date"></label>
-        <input asp-for="Date" class="form-control" type="date" />
-    </div>
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-ticket-alt me-2"></i>Create Customer Voucher
+                </h4>
+            </div>
+            <div class="card-body">
+
+
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Name"></label>
+                        <input asp-for="Name" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Quantity"></label>
+                        <input asp-for="Quantity" class="form-control" type="number" step="0.01" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Price"></label>
+                        <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                    </div>
+                    <div class="mb-4">
+                        <label asp-for="Date"></label>
+                        <input asp-for="Date" class="form-control" type="date" />
+                    </div>
  
     
-    <button type="submit" class="btn btn-success">Create</button>
-    <a href="/CustomerVouchers/Index" class="btn btn-secondary">Cancel</a>
-</form>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/CustomerVouchers/Index" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-save me-1"></i>Create
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

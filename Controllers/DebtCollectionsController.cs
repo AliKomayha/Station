@@ -26,7 +26,7 @@ namespace Station.Controllers
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debt_Collection", connection);
+                    "SELECT Debt_Collection.Id, Debt_Collection.Name, Price, Date, Users.Id, Users.Name FROM Debt_Collection JOIN Users ON Users.Id = Debt_Collection.UsersID", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -36,7 +36,11 @@ namespace Station.Controllers
                         Name = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User {
+                            Id = reader.GetInt32(4),
+                            Name = reader.GetString(5)
+                        } 
                     });
                 }
             }
@@ -145,7 +149,7 @@ namespace Station.Controllers
             {
                 connection.Open();
                 var command = new SqlCommand(
-                    "SELECT Id, Name, Price, Date, UsersID FROM Debt_Collection WHERE Id=@Id", connection);
+                    "SELECT Debt_Collection.Id, Debt_Collection.Name, Price, Date, Users.Id, Users.Name FROM Debt_Collection JOIN Users ON Users.Id = Debt_Collection.UsersID WHERE Debt_Collection.Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -156,7 +160,11 @@ namespace Station.Controllers
                         Name = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User {
+                            Id = reader.GetInt32(4),
+                            Name = reader.GetString(5 )
+                        }
                     };
                 }
             }

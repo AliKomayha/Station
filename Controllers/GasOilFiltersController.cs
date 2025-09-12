@@ -24,7 +24,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Type, Quantity, Price, Date, UsersID FROM Gas_Oil_Filters", connection);
+                var command = new SqlCommand("SELECT Gas_Oil_Filters.Id, Type, Quantity, Price, Date, Users.Id, Users.Name FROM Gas_Oil_Filters JOIN Users ON Users.Id = Gas_Oil_Filters.UsersID", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -35,7 +35,12 @@ namespace Station.Controllers
                         Quantity = reader.GetDecimal(2),
                         Price = reader.GetDecimal(3),
                         Date = reader.GetDateTime(4),
-                        UserId = reader.GetInt32(5)
+                        UserId = reader.GetInt32(5),
+                        User = new User
+                        {
+                            Id = reader.GetInt32(5),
+                            Name = reader.GetString(6),
+                        }
                     });
                 }
             }
@@ -145,7 +150,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Type, Quantity, Price, Date, UsersID FROM Gas_Oil_Filters WHERE Id=@Id", connection);
+                var command = new SqlCommand("SELECT Gas_Oil_Filters.Id, Type, Quantity, Price, Date, Users.Id, Users.Name FROM Gas_Oil_Filters JOIN Users ON Users.Id = Gas_Oil_Filters.UsersID WHERE Gas_Oil_Filters.Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -157,7 +162,12 @@ namespace Station.Controllers
                         Quantity = reader.GetDecimal(2),
                         Price = reader.GetDecimal(3),
                         Date = reader.GetDateTime(4),
-                        UserId = reader.GetInt32(5)
+                        UserId = reader.GetInt32(5),
+                        User = new User
+                        {
+                            Id = reader.GetInt32(5),
+                            Name = reader.GetString(6),
+                        }
                     };
                 }
             }

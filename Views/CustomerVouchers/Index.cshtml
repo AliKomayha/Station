@@ -4,14 +4,18 @@
     ViewData["Title"] = "Customer Voucher";
 }
 
-<h2>Customer Vouchers</h2>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="fas fa-ticket-alt me-2"></i>Customer Vouchers
+    </h2>
+    <a href="/CustomerVouchers/Create" class="btn btn-success">
+        <i class="fas fa-plus me-1"></i>Create Customer Voucher
+    </a>
+</div>
 
-<p>
-    <a href="/CustomerVouchers/Create" class="btn btn-success">Create Customer Voucher</a>
-</p>
-
-<table class="table">
-    <thead>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
         <tr>
             <th>Name</th>
             <th>Quantity</th>
@@ -27,8 +31,8 @@
             <tr>
                 <td>@customervoucher.Name</td>
                 <td>@customervoucher.Quantity</td>
-                <td>@customervoucher.Price</td>
-                <td>@customervoucher.Date.ToString("yyyy-MM-dd")</td>
+                    <td><strong class="text-success">$@customervoucher.Price.ToString("F2")</strong></td>
+                <td>@customervoucher.Date.ToString("MMM dd-yyyy")</td>
                 <td>@customervoucher.User?.Name</td>
                 <td>
                     <a href="/CustomerVouchers/Details/@customervoucher.Id" class="btn btn-info btn-sm">Details</a>
@@ -39,3 +43,4 @@
         }
     </tbody>
 </table>
+</div>

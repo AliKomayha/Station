@@ -4,14 +4,19 @@
     ViewData["Title"] = "Liters Plus";
 }
 
-<h2>Liters Plus</h2>
 
-<p>
-    <a href="/LitersPlus/Create" class="btn btn-success">Create Liters Plus</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+        <i class="fas fa-gas-pump me-2"></i>Liters Plus
+    </h2>
+    <a href="/LitersPlus/Create" class="btn btn-success">
+        <i class="fas fa-plus me-1"></i>Create Liters Plus
+    </a>
+</div>
 
-<table class="table">
-    <thead>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
         <tr>
             <th>Type</th>
             <th>Quantity</th>
@@ -27,8 +32,8 @@
             <tr>
                 <td>@litersplus.Type</td>
                 <td>@litersplus.Quantity</td>
-                <td>@litersplus.Price</td>
-                <td>@litersplus.Date.ToString("yyyy-MM-dd")</td>
+                    <td><strong class="text-success">$@litersplus.Price.ToString("F2")</strong></td>
+                    <td>@litersplus.Date.ToString("MMM dd-yyyy")</td>
                 <td>@litersplus.User?.Name</td>
                 <td>
                     <a href="/LitersPlus/Details/@litersplus.Id" class="btn btn-info btn-sm">Details</a>
@@ -39,3 +44,4 @@
         }
     </tbody>
 </table>
+</div>

@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Humanizer;
 
 namespace Station.Controllers
 {
@@ -24,7 +25,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Type, Price, Date, UsersID FROM Expenses", connection);
+                var command = new SqlCommand("SELECT Expenses.Id, Type, Price, Date, Users.Id, Users.Name FROM Expenses JOIN Users ON Users.Id = Expenses.UsersID ", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -34,7 +35,12 @@ namespace Station.Controllers
                         Type = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User
+                        {
+                            Id=reader.GetInt32(4),
+                            Name=reader.GetString(5)
+                        }
                     });
                 }
             }
@@ -43,6 +49,7 @@ namespace Station.Controllers
 
         
         public IActionResult Create() => View();
+
 
         // POST create user
         [HttpPost]
@@ -146,7 +153,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Type, Price, Date, UsersID FROM Expenses WHERE Id=@Id", connection);
+                var command = new SqlCommand("SELECT Expenses.Id, Type, Price, Date, Users.Id, Users.Name FROM Expenses JOIN Users ON Users.Id = Expenses.UsersID  WHERE Expenses.Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -157,7 +164,12 @@ namespace Station.Controllers
                         Type = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User
+                        {
+                            Id=reader.GetInt32(4),
+                            Name= reader.GetString(5)
+                        }
                     };
                 }
             }
