@@ -145,7 +145,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Type, Price, Date, UsersID FROM Car_Washes WHERE Id=@Id", connection);
+                var command = new SqlCommand("SELECT Car_Washes.Id, Type,  Price, Date, Users.Id, Users.Name FROM Car_Washes JOIN Users ON Users.Id = Car_Washes.UsersID WHERE Car_Washes.Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -156,7 +156,12 @@ namespace Station.Controllers
                         Type = reader.GetString(1),
                         Price = reader.GetDecimal(2),
                         Date = reader.GetDateTime(3),
-                        UserId = reader.GetInt32(4)
+                        UserId = reader.GetInt32(4),
+                        User = new User
+                        {
+                            Id = reader.GetInt32(4),
+                            Name = reader.GetString(5),
+                        }
                     };
                 }
             }
