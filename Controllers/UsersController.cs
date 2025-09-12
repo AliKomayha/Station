@@ -176,6 +176,20 @@ namespace Station.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Activate(int id)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+                var command = new SqlCommand("UPDATE Users SET IsActive = 1 WHERE Id = @Id", connection);
+                command.Parameters.AddWithValue("@Id", id);
+                command.ExecuteNonQuery();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
 
 
         [Authorize]
