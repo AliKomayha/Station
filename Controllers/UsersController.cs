@@ -27,7 +27,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                Console.WriteLine("POST hit: Name=");
+                
                 var command = new SqlCommand("SELECT Id, Name, Role, PasswordHash, IsActive FROM Users", connection);
                 var reader = command.ExecuteReader();
                 while (reader.Read())
@@ -36,7 +36,8 @@ namespace Station.Controllers
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
-                        Role = reader.GetString(2)
+                        Role = reader.GetString(2),
+                        // IsActive to be added properly
                     });
                 }
             }
@@ -143,7 +144,7 @@ namespace Station.Controllers
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
-                var command = new SqlCommand("SELECT Id, Name, Role FROM Users WHERE Id=@Id", connection);
+                var command = new SqlCommand("SELECT Id, Name, Role, IsActive FROM Users WHERE Id=@Id", connection);
                 command.Parameters.AddWithValue("@Id", id);
                 var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -152,7 +153,8 @@ namespace Station.Controllers
                     {
                         Id = reader.GetInt32(0),
                         Name = reader.GetString(1),
-                        Role = reader.GetString(2)
+                        Role = reader.GetString(2),
+                        IsActive = reader.GetBoolean(3)
                     };
                 }
             }

@@ -20,7 +20,7 @@ namespace Station.Models
         public string PasswordHash { get; set; }
 
         [ValidateNever]
-        public bool IsActive { get; set; } = true;
+        public bool IsActive { get; set; }
 
         [ValidateNever]
         public ICollection<Expense> Expenses { get; set; }
