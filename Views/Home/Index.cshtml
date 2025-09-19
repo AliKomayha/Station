@@ -1,12 +1,24 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Home Page";
     var userName = User.Identity?.Name; // comes from ClaimTypes.Name
 }
 
 <div class="row">
     @* left form *@
-    <div class="col-md-4 bg-secondary">
+    <div class="col-md-4 badge bg-secondary mt-5">
 
+        <div class="mb-4 ">
+            <label >From</label>
+            <input  class="form-control" type="date" />
+            <span  class="text-danger"></span>
+        </div>
+
+        <div class="mb-4 ">
+            <label>To</label>
+            <input class="form-control" type="date" />
+            <span class="text-danger"></span>
+        </div>
 
     </div>
 

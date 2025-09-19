@@ -22,6 +22,7 @@ namespace Station.Controllers
         public IActionResult Index()
         {
             var expenses = new List<Expense>();
+
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();

@@ -1,0 +1,479 @@
+@model Station.Models.Report
+
+@{
+    ViewData["Title"] = "Reports";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- Left Side - Report Form -->
+        <div class="col-12 col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>Report Generator
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Generate" method="post" id="reportForm">
+                        <div class="mb-3">
+                            <label asp-for="FromDate" class="form-label fw-bold"></label>
+                            <input asp-for="FromDate" class="form-control" type="date" />
+                            <span asp-validation-for="FromDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="ToDate" class="form-label fw-bold"></label>
+                            <input asp-for="ToDate" class="form-control" type="date" />
+                            <span asp-validation-for="ToDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold mb-3">
+                                <i class="fas fa-list-check me-2"></i>Select Tables to Include:
+                            </h6>
+                            
+                            @* <div class="form-check mb-2"> *@
+                            @*     <input asp-for="IncludeUsers" class="form-check-input" type="checkbox" /> *@
+                            @*     <label asp-for="IncludeUsers" class="form-check-label"> *@
+                            @*         <i class="fas fa-users me-1"></i>Users *@
+                            @*     </label> *@
+                            @* </div> *@
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeExpenses" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeExpenses" class="form-check-label">
+                                    <i class="fas fa-receipt me-1"></i>Expenses
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeDebts" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeDebts" class="form-check-label">
+                                    <i class="fas fa-credit-card me-1"></i>Debts
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeCarWashes" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeCarWashes" class="form-check-label">
+                                    <i class="fas fa-car-wash me-1"></i>Car Washes
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeDebtCollections" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeDebtCollections" class="form-check-label">
+                                    <i class="fas fa-hand-holding-usd me-1"></i>Debt Collections
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeCustomerVouchers" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeCustomerVouchers" class="form-check-label">
+                                    <i class="fas fa-ticket-alt me-1"></i>Customer Vouchers
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeGovernmentVouchers" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeGovernmentVouchers" class="form-check-label">
+                                    <i class="fas fa-building me-1"></i>Government Vouchers
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeGasOilFilters" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeGasOilFilters" class="form-check-label">
+                                    <i class="fas fa-oil-can me-1"></i>Gas/Oil/Filters
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input asp-for="IncludeLitersPlus" class="form-check-input" type="checkbox" />
+                                <label asp-for="IncludeLitersPlus" class="form-check-label">
+                                    <i class="fas fa-plus-circle me-1"></i>Liters Plus
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-play me-1"></i>Apply
+                            </button>
+                            <button type="button" class="btn btn-success" id="printBtn" @(Model.HasData ? "" : "disabled")>
+                                <i class="fas fa-print me-1"></i>Print Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Report Results -->
+        <div class="col-12 col-lg-8">
+            <div id="reportResults">
+                @if (Model.HasData)
+                {
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-file-alt me-2"></i>Generated Report
+                            </h5>
+                            <small>
+                                <i class="fas fa-clock me-1"></i>Generated: @Model.GeneratedAt.ToString("MMM dd, yyyy HH:mm")
+                            </small>
+                        </div>
+                        <div class="card-body" id="printableContent">
+                            <div class="text-center mb-4">
+                                <h4 class="text-primary">Station Report</h4>
+                                <p class="text-muted">
+                                    <i class="fas fa-calendar-alt me-1"></i>
+                                    From: @Model.FromDate.ToString("MMM dd, yyyy") 
+                                    <i class="fas fa-arrow-right mx-2"></i>
+                                    To: @Model.ToDate.ToString("MMM dd, yyyy")
+                                </p>
+                            </div>
+
+                            @* @if (Model.Users.Any()) *@
+                            @* { *@
+                            @*     <div class="mb-4"> *@
+                            @*         <h5 class="text-primary border-bottom pb-2"> *@
+                            @*             <i class="fas fa-users me-2"></i>Users (@Model.Users.Count) *@
+                            @*         </h5> *@
+                            @*         <div class="table-responsive"> *@
+                            @*             <table class="table table-striped table-sm"> *@
+                            @*                 <thead class="table-dark"> *@
+                            @*                     <tr> *@
+                            @*                         <th>ID</th> *@
+                            @*                         <th>Name</th> *@
+                            @*                         <th>Role</th> *@
+                            @*                         <th>Status</th> *@
+                            @*                     </tr> *@
+                            @*                 </thead> *@
+                            @*                 <tbody> *@
+                            @*                     @foreach (var user in Model.Users) *@
+                            @*                     { *@
+                            @*                         <tr> *@
+                            @*                             <td>@user.Id</td> *@
+                            @*                             <td>@user.Name</td> *@
+                            @*                             <td> *@
+                            @*                                 <span class="badge @(user.Role == "Admin" ? "bg-danger" : "bg-info")">@user.Role</span> *@
+                            @*                             </td> *@
+                            @*                             <td> *@
+                            @*                                 <span class="badge @(user.IsActive ? "bg-success" : "bg-danger")"> *@
+                            @*                                     @(user.IsActive ? "Active" : "Inactive") *@
+                            @*                                 </span> *@
+                            @*                             </td> *@
+                            @*                         </tr> *@
+                            @*                     } *@
+                            @*                 </tbody> *@
+                            @*             </table> *@
+                            @*         </div> *@
+                            @*     </div> *@
+                            @* } *@
+
+                            @if (Model.Expenses.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-receipt me-2"></i>Expenses (@Model.Expenses.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var expense in Model.Expenses)
+                                                {
+                                                    <tr>
+                                                        <td><span class="badge bg-primary">@expense.Type</span></td>
+                                                        <td><strong class="text-success">$@expense.Price.ToString("F2")</strong></td>
+                                                        <td>@expense.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@expense.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.Debts.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-credit-card me-2"></i>Debts (@Model.Debts.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var debt in Model.Debts)
+                                                {
+                                                    <tr>
+                                                        <td>@debt.Name</td>
+                                                        <td><strong class="text-danger">$@debt.Price.ToString("F2")</strong></td>
+                                                        <td>@debt.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@debt.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.CarWashes.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-car-wash me-2"></i>Car Washes (@Model.CarWashes.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var carWash in Model.CarWashes)
+                                                {
+                                                    <tr>
+                                                        <td><span class="badge bg-info">@carWash.Type</span></td>
+                                                        <td><strong class="text-success">$@carWash.Price.ToString("F2")</strong></td>
+                                                        <td>@carWash.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@carWash.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.DebtCollections.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-hand-holding-usd me-2"></i>Debt Collections (@Model.DebtCollections.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var debtCollection in Model.DebtCollections)
+                                                {
+                                                    <tr>
+                                                        <td>@debtCollection.Name</td>
+                                                        <td><strong class="text-success">$@debtCollection.Price.ToString("F2")</strong></td>
+                                                        <td>@debtCollection.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@debtCollection.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.CustomerVouchers.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-ticket-alt me-2"></i>Customer Vouchers (@Model.CustomerVouchers.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var customerVoucher in Model.CustomerVouchers)
+                                                {
+                                                    <tr>
+                                                        <td><span class="badge bg-warning">@customerVoucher.Name</span></td>
+                                                        <td><strong class="text-success">$@customerVoucher.Price.ToString("F2")</strong></td>
+                                                        <td>@customerVoucher.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@customerVoucher.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.GovernmentVouchers.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-building me-2"></i>Government Vouchers (@Model.GovernmentVouchers.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var governmentVoucher in Model.GovernmentVouchers)
+                                                {
+                                                    <tr>
+                                                        <td><span class="badge bg-secondary">@governmentVoucher.Name</span></td>
+                                                        <td><strong class="text-success">$@governmentVoucher.Price.ToString("F2")</strong></td>
+                                                        <td>@governmentVoucher.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@governmentVoucher.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.GasOilFilters.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-oil-can me-2"></i>Gas/Oil/Filters (@Model.GasOilFilters.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var gasOilFilter in Model.GasOilFilters)
+                                                {
+                                                    <tr>
+                                                        <td><span class="badge bg-dark">@gasOilFilter.Type</span></td>
+                                                        <td><strong class="text-success">$@gasOilFilter.Price.ToString("F2")</strong></td>
+                                                        <td>@gasOilFilter.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@gasOilFilter.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (Model.LitersPlus.Any())
+                            {
+                                <div class="mb-4">
+                                    <h5 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-plus-circle me-2"></i>Liters Plus (@Model.LitersPlus.Count)
+                                    </h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-sm">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Date</th>
+                                                    <th>User</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var litersPlus in Model.LitersPlus)
+                                                {
+                                                    <tr>
+                                                        <td><span class="badge bg-success">@litersPlus.Type</span></td>
+                                                        <td><strong class="text-success">$@litersPlus.Price.ToString("F2")</strong></td>
+                                                        <td>@litersPlus.Date.ToString("MMM dd, yyyy")</td>
+                                                        <td>@litersPlus.User?.Name</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="card shadow">
+                        <div class="card-body text-center py-5">
+                            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No Report Generated</h5>
+                            <p class="text-muted">Select date range and tables, then click "Apply" to generate a report.</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('printBtn').addEventListener('click', function() {
+            const printContent = document.getElementById('printableContent');
+            const originalContent = document.body.innerHTML;
+            
+            document.body.innerHTML = printContent.innerHTML;
+            window.print();
+            document.body.innerHTML = originalContent;
+            
+            // Reload the page to restore functionality
+            location.reload();
+        });
+
+        // Set default dates
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const thirtyDaysAgo = new Date(today.getTime() - (30 * 24 * 60 * 60 * 1000));
+            
+            const fromDateInput = document.querySelector('input[name="FromDate"]');
+            const toDateInput = document.querySelector('input[name="ToDate"]');
+            
+            if (fromDateInput && !fromDateInput.value) {
+                fromDateInput.value = thirtyDaysAgo.toISOString().split('T')[0];
+            }
+            if (toDateInput && !toDateInput.value) {
+                toDateInput.value = today.toISOString().split('T')[0];
+            }
+        });
+    </script>
+}
